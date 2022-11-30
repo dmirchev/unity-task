@@ -8,6 +8,7 @@ namespace UnityTask
     {
         [SerializeField] private List<Transform> levelTransformPrefabs;
         [SerializeField] Transform levelParent;
+        [SerializeField] Transform levelGround;
 
         private List<List<Transform>> levelTransformsList;
 
@@ -33,7 +34,7 @@ namespace UnityTask
             }
         }
 
-        public void UpdateList(bool levelCellsCreationDirection, int oldCellsCount, int newCellsCount)
+        public void UpdateList(int levelSize, bool levelCellsCreationDirection, int oldCellsCount, int newCellsCount)
         {
             if (levelCellsCreationDirection)
             {
@@ -45,6 +46,9 @@ namespace UnityTask
                 PlayerDataManager.Instance.RemoveCellsFromLevel(oldCellsCount, newCellsCount);
                 RemoveCells(oldCellsCount, newCellsCount);
             }
+
+            PlayerDataManager.Instance.SetLevelSize(levelSize);
+            UpdateLevelGround();
 
             for (int i = 0; i < levelTransformsList.Count; i++)
                 for (int j = 0; j < levelTransformsList.Count; j++)
@@ -82,6 +86,13 @@ namespace UnityTask
 
                 UpdateLevelObjectTransform(xIndex, yIndex);
             }
+        }
+
+        void UpdateLevelGround()
+        {
+            levelGround.localScale = GridManager.Instance.GridScale;
+
+
         }
 
         void UpdateLevelObjectTransform(int xIndex, int yIndex)

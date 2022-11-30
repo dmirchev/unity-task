@@ -34,8 +34,6 @@ namespace UnityTask
         {
             playerData.New();
 
-            CreateLevel();
-
             Save(onCompleteAction);
         }
 
@@ -62,9 +60,9 @@ namespace UnityTask
         }
 
         // Level
-        void CreateLevel()
+        public void SetLevelSize(int gridSize)
         {
-            playerData.CreateLevel(GridManager.Instance.gridCells);
+            playerData.levelSize = gridSize;
         }
 
         public void AddCellsToLevel(int oldCellsCount, int newCellsCount)

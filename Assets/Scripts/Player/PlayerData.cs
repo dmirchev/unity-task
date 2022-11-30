@@ -13,30 +13,27 @@ namespace UnityTask
     [System.Serializable]
     public class PlayerData
     {
+        public int levelSize;
         public List<LevelRow> level;
 
         public void New()
         {
-            level = new List<LevelRow>();
-        }
-
-        public void CreateLevel(int gridCells)
-        {
-            level = new List<LevelRow>(gridCells);
+            levelSize = 20;
+            
+            int cellsCount = 10;
+            level = new List<LevelRow>(cellsCount);
 
             int nextLevelRowIndex;
             for (int i = 0; i < level.Capacity; i++)
             {
                 level.Add(new LevelRow() {
-                    row = new List<int>(gridCells)
+                    row = new List<int>(cellsCount)
                 });
                 
                 nextLevelRowIndex = level.Count-1;
                 for (int j = 0; j < level[nextLevelRowIndex].row.Capacity; j++)
                     level[nextLevelRowIndex].row.Add(-1);
             }
-
-            Display();
         }
 
         public void AddCellsToLevel(int oldCellsCount, int newCellsCount)

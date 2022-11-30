@@ -10,6 +10,7 @@ namespace UnityTask
         [SerializeField] [Range(1, 50)] public int gridCells = 1;
 
         public float HalfGridSize { get { return gridSize * 0.5f; } }
+        public Vector3 GridScale { get { return new Vector3(gridSize, 1, gridSize); } }
 
         public Vector3 BottomLeftCorner { get { return new Vector3(-HalfGridSize, 0, -HalfGridSize); } }
         public Vector3 TopRightCorner { get { return new Vector3(HalfGridSize, 0, HalfGridSize); } }
@@ -22,6 +23,7 @@ namespace UnityTask
 
         public void InitManager()
         {
+            gridSize = PlayerDataManager.Instance.playerData.levelSize;
             gridCells = PlayerDataManager.Instance.playerData.level.Count;
 
             SetOldValues();
@@ -45,7 +47,7 @@ namespace UnityTask
 
             if (gridSize != oldGridSize || gridCells != oldGridCells)
             {
-                LevelManager.Instance.UpdateList(gridCells > oldGridCells, oldGridCells, gridCells);
+                LevelManager.Instance.UpdateList(gridSize, gridCells > oldGridCells, oldGridCells, gridCells);
 
                 SetOldValues();
             }
