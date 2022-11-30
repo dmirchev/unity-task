@@ -17,8 +17,8 @@ namespace UnityTask
         public float GridCellSize { get { return (float)gridSize / gridCells; } }
         public Vector3 GridCellScale { get { return new Vector3(GridCellSize, 1, GridCellSize); } }
 
-        float oldGridSize;
-        float oldGridCells;
+        int oldGridSize;
+        int oldGridCells;
 
         public void InitManager()
         {
@@ -45,11 +45,9 @@ namespace UnityTask
 
             if (gridSize != oldGridSize || gridCells != oldGridCells)
             {
-                bool levelCellsCreationDirection = gridCells > oldGridCells;
+                LevelManager.Instance.UpdateList(gridCells > oldGridCells, oldGridCells, gridCells);
 
                 SetOldValues();
-
-                LevelManager.Instance.UpdateList(levelCellsCreationDirection);
             }
         }
 

@@ -39,34 +39,40 @@ namespace UnityTask
             Display();
         }
 
-        public void AddCellsToLevel(int cellsDifference)
+        public void AddCellsToLevel(int oldCellsCount, int newCellsCount)
         {
-            for (int i = 0; i < cellsDifference; i++)
+            for (int i = oldCellsCount; i < newCellsCount; i++)
             {
                 level.Add(new LevelRow() {
-                    row = new List<int>(level.Count + 1)
+                    row = new List<int>(newCellsCount)
                 });
+                
+                for (int j = 0; j < level[i].row.Capacity; j++)
+                    level[i].row.Add(-1);
+            }
 
-                int nextLevelRowIndex = level.Count-1;
-                for (int j = 0; j < nextLevelRowIndex; j++)
-                    level[j].row.Add(-1);
-
-                for (int j = 0; j < level[nextLevelRowIndex].row.Capacity; j++)
-                    level[nextLevelRowIndex].row.Add(-1);
+            for (int i = 0; i < oldCellsCount; i++)
+            {
+                for (int j = oldCellsCount; j < newCellsCount; j++)
+                    level[i].row.Add(-1);
             }
 
             Display();
         }
 
-        public void RemoveCellsFromLevel(int cellsDifference)
+        public void RemoveCellsFromLevel(int oldCellsCount, int newCellsCount)
         {
-            for (int i = 0; i < cellsDifference; i++)
+            for (int i = oldCellsCount-1; i >= newCellsCount; i--)
             {
-                level.RemoveAt(level.Count-1);
-
-                int rowsCount = level.Count-1;
-                for (int j = 0; j < level.Count; j++)
-                    level[j].row.RemoveAt(rowsCount);
+                level.RemoveAt(i);
+            }
+            
+            for (int i = newCellsCount-1; i >= 0; i--)
+            {
+                for (int j = oldCellsCount-1; j >= newCellsCount; j--)
+                {
+                    level[i].row.RemoveAt(j);
+                }
             }
 
             Display();
@@ -74,7 +80,7 @@ namespace UnityTask
 
         public void Display()
         {
-            string output = "";
+            string output = "\n";
             for (int i = 0; i < level.Count; i++)
             {
                 for (int j = 0; j < level[i].row.Count; j++)

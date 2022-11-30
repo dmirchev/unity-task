@@ -33,25 +33,22 @@ namespace UnityTask
             }
         }
 
-        public void UpdateList(bool levelCellsCreationDirection)
+        public void UpdateList(bool levelCellsCreationDirection, int oldCellsCount, int newCellsCount)
         {
-            int cellsDifference;
             if (levelCellsCreationDirection)
             {
-                cellsDifference = GridManager.Instance.gridCells - levelTransformsList.Count;
-
-                PlayerDataManager.Instance.AddCellsToLevel(cellsDifference);
-                AddCells(cellsDifference);
+                PlayerDataManager.Instance.AddCellsToLevel(oldCellsCount, newCellsCount);
+                AddCells(oldCellsCount, newCellsCount);
             }
             else
             {
-                cellsDifference = levelTransformsList.Count - GridManager.Instance.gridCells;
-
-                PlayerDataManager.Instance.RemoveCellsFromLevel(cellsDifference);
-                RemoveCells(cellsDifference);
+                PlayerDataManager.Instance.RemoveCellsFromLevel(oldCellsCount, newCellsCount);
+                RemoveCells(oldCellsCount, newCellsCount);
             }
 
-            // for (int i = 0; i < )
+            for (int i = 0; i < levelTransformsList.Count; i++)
+                for (int j = 0; j < levelTransformsList.Count; j++)
+                    UpdateLevelObjectTransform(i, j);
         }
 
         public void SetObject(Vector3 hitPosition)
@@ -78,17 +75,24 @@ namespace UnityTask
         {
             if (index > -1 && index < levelTransformPrefabs.Count)
             {
-                Transform objectCopy = Transform.Instantiate(
+                levelTransformsList[xIndex][yIndex] = Transform.Instantiate(
                     levelTransformPrefabs[index],
-                    GridManager.Instance.GetPosition(xIndex, yIndex),
-                    Quaternion.identity,
                     levelParent
                 );
 
-                objectCopy.localScale = GridManager.Instance.GridCellScale;
-
-                levelTransformsList[xIndex][yIndex] = objectCopy;
+                UpdateLevelObjectTransform(xIndex, yIndex);
             }
+        }
+
+        void UpdateLevelObjectTransform(int xIndex, int yIndex)
+        {
+            Transform levelObjectTransform = levelTransformsList[xIndex][yIndex];
+
+            if (levelObjectTransform == null) return;
+
+            levelObjectTransform.localPosition = GridManager.Instance.GetPosition(xIndex, yIndex);
+            levelObjectTransform.localRotation = Quaternion.identity;
+            levelObjectTransform.localScale = GridManager.Instance.GridCellScale;
         }
 
         public void DestroyLevelObject(int xIndex, int yIndex)
@@ -99,86 +103,51 @@ namespace UnityTask
                 Destroy(levelTransformsList[xIndex][yIndex].gameObject);
         }
 
-        public void AddCells(int cellsDifference)
+        public void AddCells(int oldCellsCount, int newCellsCount)
         {
-            /* for (int i = 0; i < levelTransformsList.Count; i++)
+            for (int i = oldCellsCount; i < newCellsCount; i++)
             {
-                for (int j = levelTransformsList[i].Count; j < GridManager.Instance.gridCells; j++)
+                levelTransformsList.Add(new List<Transform>(newCellsCount));
+                
+                for (int j = 0; j < levelTransformsList[i].Capacity; j++)
                     levelTransformsList[i].Add(null);
             }
 
-            int gridCells = GridManager.Instance.gridCells;
-
-            int lastListIndex;
-            for (int i = levelTransformsList.Count; i < gridCells; i++)
+            for (int i = 0; i < oldCellsCount; i++)
             {
-                levelTransformsList.Add(new List<Transform>(gridCells));
-                
-                lastListIndex = levelTransformsList.Count-1;
-                for (int j = 0; j < levelTransformsList[lastListIndex].Capacity; j++)
-                {
-                    levelTransformsList[lastListIndex].Add(null);
-                }
-            } */
-
-            /* for (int i = 0; i < cellsDifference; i++)
-            {
-                levelTransformsList.Add(new List<Transform>(levelTransformsList.Count + 1));
-
-                int nextLevelRowIndex = levelTransformsList.Count-1;
-                for (int j = 0; j < nextLevelRowIndex; j++)
-                    levelTransformsList[j].Add(null);
-
-                for (int j = 0; j < levelTransformsList[nextLevelRowIndex].Capacity; j++)
-                    levelTransformsList[nextLevelRowIndex].Add(null);
-            } */
+                for (int j = oldCellsCount; j < newCellsCount; j++)
+                    levelTransformsList[i].Add(null);
+            }
 
             Display();
         }
 
-        public void RemoveCells(int cellsDifference)
+        public void RemoveCells(int oldCellsCount, int newCellsCount)
         {
-            /* for (int i = GridManager.Instance.gridCells; i < levelTransformsList.Count; i++)
+            for (int i = oldCellsCount-1; i >= newCellsCount; i--)
             {
                 for (int j = 0; j < levelTransformsList[i].Count; j++)
                     DestroyLevelObject(i, j);
 
                 levelTransformsList.RemoveAt(i);
-                i--;
             }
-
-            for (int i = 0; i < levelTransformsList.Count; i++)
+            
+            for (int i = newCellsCount-1; i >= 0; i--)
             {
-                for (int j = GridManager.Instance.gridCells; j < levelTransformsList[i].Count-1; j++)
+                for (int j = oldCellsCount-1; j >= newCellsCount; j--)
                 {
                     DestroyLevelObject(i, j);
 
                     levelTransformsList[i].RemoveAt(j);
-                    j--;
                 }
-            } */
-
-            /* for (int i = 0; i < cellsDifference; i++)
-            {
-                for (int j = 0; j < levelTransformsList[i].Count; j++)
-                    DestroyLevelObject(i, j);
-                
-                levelTransformsList.RemoveAt(levelTransformsList.Count-1);
-
-                int rowsCount = levelTransformsList.Count-1;
-                for (int j = 0; j < levelTransformsList.Count; j++)
-                {
-                    DestroyLevelObject(i, j);
-                    levelTransformsList[j].RemoveAt(rowsCount);
-                }
-            } */
+            }
 
             Display();
         }
 
         public void Display()
         {
-            string output = "";
+            string output = "\n";
             for (int i = 0; i < levelTransformsList.Count; i++)
             {
                 for (int j = 0; j < levelTransformsList[i].Count; j++)

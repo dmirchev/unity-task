@@ -67,16 +67,16 @@ namespace UnityTask
             playerData.CreateLevel(GridManager.Instance.gridCells);
         }
 
-        public void AddCellsToLevel(int cellsDifference)
+        public void AddCellsToLevel(int oldCellsCount, int newCellsCount)
         {
-            playerData.AddCellsToLevel(cellsDifference);
+            playerData.AddCellsToLevel(oldCellsCount, newCellsCount);
 
             Save();
         }
 
-        public void RemoveCellsFromLevel(int cellsDifference)
+        public void RemoveCellsFromLevel(int oldCellsCount, int newCellsCount)
         {
-            playerData.RemoveCellsFromLevel(cellsDifference);
+            playerData.RemoveCellsFromLevel(oldCellsCount, newCellsCount);
 
             Save();
         }
