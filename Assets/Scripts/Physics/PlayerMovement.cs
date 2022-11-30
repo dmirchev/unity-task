@@ -10,6 +10,7 @@ namespace UnityTask
         private CapsuleCollider _capsuleCollider;
 
         private LayerMask groundLayerMask;
+        private LayerMask obstacleLayerMask;
 
         [SerializeField] private Transform _modelTransform;
 
@@ -40,7 +41,8 @@ namespace UnityTask
             _rigidbody = GetComponent<Rigidbody>();
             _capsuleCollider = GetComponent<CapsuleCollider>();
 
-            groundLayerMask = 1 << 7;
+            groundLayerMask = (1 << 7) | (1 << 8);
+            obstacleLayerMask = 1 << 8;
 
             groundHits = new RaycastHit[1];
 
@@ -232,7 +234,7 @@ namespace UnityTask
             Vector3 point0, point1;
             GetCapsileCenters(castPosition, out point0, out point1);
 
-            int count = Physics.OverlapCapsuleNonAlloc(point0, point1, _capsuleCollider.radius, wallCollider, groundLayerMask);
+            int count = Physics.OverlapCapsuleNonAlloc(point0, point1, _capsuleCollider.radius, wallCollider, obstacleLayerMask);
 
             // Get Intersections
             for (int i = 0; i < count; i++)

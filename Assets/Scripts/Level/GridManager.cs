@@ -15,12 +15,15 @@ namespace UnityTask
         public Vector3 TopRightCorner { get { return new Vector3(HalfGridSize, 0, HalfGridSize); } }
 
         public float GridCellSize { get { return (float)gridSize / gridCells; } }
+        public Vector3 GridCellScale { get { return new Vector3(GridCellSize, 1, GridCellSize); } }
 
         float oldGridSize;
         float oldGridCells;
 
-        void Start()
+        public void InitManager()
         {
+            gridCells = PlayerDataManager.Instance.playerData.level.Count;
+
             SetOldValues();
         }
 
@@ -30,7 +33,7 @@ namespace UnityTask
             oldGridCells = gridCells;
         }
 
-        void Update()
+        public void UpdateManager()
         {
             Vector3 pos = new Vector3(4, 0, 4);
 
@@ -42,9 +45,11 @@ namespace UnityTask
 
             if (gridSize != oldGridSize || gridCells != oldGridCells)
             {
+                bool levelCellsCreationDirection = gridCells > oldGridCells;
+
                 SetOldValues();
 
-                LevelManager.Instance.UpdateList(gridCells);
+                LevelManager.Instance.UpdateList(levelCellsCreationDirection);
             }
         }
 
@@ -64,7 +69,7 @@ namespace UnityTask
             yIndex = Mathf.FloorToInt((worldPosition.z - BottomLeftCorner.z) / GridCellSize);
         }
 
-        void OnDrawGizmosSelected()
+        void OnDrawGizmos()
         {
             // Borders
             Debug.DrawRay(BottomLeftCorner, Vector3.forward * gridSize, Color.green);
