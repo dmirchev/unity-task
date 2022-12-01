@@ -6,13 +6,15 @@ namespace UnityTask
 {
     public class LevelManager : Singleton<LevelManager>
     {
-        [SerializeField] private List<Transform> levelTransformPrefabs;
+        [SerializeField] private List<LevelObject> levelObjectsPrefabs;
         [SerializeField] Transform levelParent;
         [SerializeField] Transform levelGround;
 
         private List<List<Transform>> levelTransformsList;
 
         private static Vector3 LEVELTRANSFORMSCALEVECTOR = new Vector3(1, 0, 1);
+
+        public List<LevelObject> LevelObjectsPrefabs { get { return levelObjectsPrefabs; } }
 
         public void InitManager()
         {
@@ -77,12 +79,12 @@ namespace UnityTask
 
         public void CreateLevelObject(int xIndex, int yIndex, int index)
         {
-            if (index > -1 && index < levelTransformPrefabs.Count)
+            if (index > -1 && index < levelObjectsPrefabs.Count)
             {
-                levelTransformsList[xIndex][yIndex] = Transform.Instantiate(
-                    levelTransformPrefabs[index],
+                /* levelTransformsList[xIndex][yIndex] = Transform.Instantiate(
+                    levelObjectsPrefabs[index],
                     levelParent
-                );
+                ); */
 
                 UpdateLevelObjectTransform(xIndex, yIndex);
             }

@@ -24,6 +24,8 @@ namespace UnityTask
         {
             GridManager.Instance.InitManager();
             LevelManager.Instance.InitManager();
+
+            GameUI.Instance.CreateUIs();
         }
 
         void Update()
