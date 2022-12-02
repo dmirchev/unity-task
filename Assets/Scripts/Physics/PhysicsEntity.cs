@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace UnityTask
 {
-    public class PlayerMovement : MonoBehaviour
+    [System.Serializable]
+    public class PhysicsEntity
     {
-        private Rigidbody _rigidbody;
-        private CapsuleCollider _capsuleCollider;
-
-        private LayerMask groundLayerMask;
-        private LayerMask castLayerMask;
-
+        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private CapsuleCollider _capsuleCollider;
         [SerializeField] private Transform _modelTransform;
+
+        public LayerMask groundLayerMask;
+        public LayerMask castLayerMask;
 
         [SerializeField] private Vector3 velocity;
 
@@ -35,28 +35,18 @@ namespace UnityTask
         [Header("Direction Driven")]
         public Vector3 directionVelocity;
 
-        void Awake()
+        public void Create()
         {
-            _rigidbody = GetComponent<Rigidbody>();
-            _capsuleCollider = GetComponent<CapsuleCollider>();
-
             groundHits = new RaycastHit[1];
 
             wallCollider = new Collider[4];
             wallColliderIntersections = new Vector3[4];
-        }
 
-        void Start()
-        {
             groundLayerMask = (1 << LevelManager.GROUNDLAYER) | (1 << LevelManager.Instance.obstacleLayer);
-            /* castLayerMask = 
-                (1 << LevelManager.Instance.obstacleLayer) | 
-                (1 << LevelManager.Instance.npcLayer) | 
-                (1 << LevelManager.Instance.collectableLayer); */
             castLayerMask = 1 << LevelManager.Instance.obstacleLayer;
         }
 
-        void Update()
+        public void Update()
         {
             if (Input.GetKey(KeyCode.W))
             {
@@ -93,7 +83,7 @@ namespace UnityTask
 
         bool reset;
 
-        void FixedUpdate()
+        public void FixedUpdate()
         {
             Movement();
         }
@@ -242,9 +232,6 @@ namespace UnityTask
 
             int count = Physics.OverlapCapsuleNonAlloc(point0, point1, _capsuleCollider.radius, wallCollider, castLayerMask);
 
-            Debug.Log("count: " + count);
-            Debug.Log(castPosition.x + " / " + castPosition.z + ": " + point0.x + " , " + point0.y + " / " + point1.x + " , " + point1.y);
-
             // Get Intersections
             for (int i = 0; i < count; i++)
             {
@@ -253,8 +240,6 @@ namespace UnityTask
                     (Vector3.forward + Vector3.right).normalized * wallCollider[i].bounds.size.magnitude,
                     Color.red
                 );
-
-                Debug.Log(wallCollider[i].name + ": " + wallCollider[i].transform.localPosition.x + ", " + wallCollider[i].transform.localPosition.z);
 
                 switch (LevelManager.Instance.GetLevelObjectTypeFromLayer(wallCollider[i].gameObject.layer))
                 {
@@ -318,7 +303,6 @@ namespace UnityTask
 
         void GetCapsileCenters(Vector3 castPosition, out Vector3 point0, out Vector3 point1)
         {
-            Debug.Log(_capsuleCollider.radius + " // " + _capsuleCollider.bounds.size.y);
             point0 = castPosition + Vector3.up * _capsuleCollider.radius;
             point1 = castPosition + Vector3.up * (_capsuleCollider.bounds.size.y - _capsuleCollider.radius);
         }

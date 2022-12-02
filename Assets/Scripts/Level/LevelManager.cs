@@ -9,31 +9,50 @@ namespace UnityTask
         [SerializeField] private List<LevelObject> levelObjectsPrefabs;
         [SerializeField] Transform levelParent;
         [SerializeField] Transform levelGround;
+        [SerializeField] private List<Collider> levelBoundColliders;
 
-        private List<List<Transform>> levelTransformsList;
+        [Header("Level Objects Lists")]
+        private List<List<LevelObject>> levelObjectList;
+        private List<DynamicLevelObject> dynamicLevelObjectList;
+        private Transform playerLevelObjectTransform;
+
+        public bool hasPlayer { get { return playerLevelObjectTransform != null; } }
 
         private static Vector3 LEVELTRANSFORMSCALEVECTOR = new Vector3(1, 0, 1);
 
         public List<LevelObject> LevelObjectsPrefabs { get { return levelObjectsPrefabs; } }
 
+        public int selectedButtonIndex;
+
+        public static int GROUNDLAYER = 6;
+
         public void InitManager()
         {
-            int gridCells = GridManager.Instance.gridCells;
+            SetLayers();
 
-            levelTransformsList = new List<List<Transform>>(gridCells);
+            int gridCells = GridManager.Instance.GridCells;
+
+            levelObjectList = new List<List<LevelObject>>(gridCells);
+            dynamicLevelObjectList = new List<DynamicLevelObject>();
 
             int lastListIndex;
-            for (int i = 0; i < levelTransformsList.Capacity; i++)
+            for (int i = 0; i < levelObjectList.Capacity; i++)
             {
-                levelTransformsList.Add(new List<Transform>(gridCells));
+                levelObjectList.Add(new List<LevelObject>(gridCells));
                 
-                lastListIndex = levelTransformsList.Count-1;
-                for (int j = 0; j < levelTransformsList[lastListIndex].Capacity; j++)
+                lastListIndex = levelObjectList.Count-1;
+                for (int j = 0; j < levelObjectList[lastListIndex].Capacity; j++)
                 {
-                    levelTransformsList[lastListIndex].Add(null);
+                    levelObjectList[lastListIndex].Add(null);
                     CreateLevelObject(i, j, PlayerDataManager.Instance.GetObjectIndex(i, j));
                 }
             }
+
+            UpdateLevelGround();
+
+            selectedButtonIndex = -2;
+
+            GameUI.Instance.UpdateLevelUI();
         }
 
         public void UpdateList(int levelSize, bool levelCellsCreationDirection, int oldCellsCount, int newCellsCount)
@@ -52,39 +71,61 @@ namespace UnityTask
             PlayerDataManager.Instance.SetLevelSize(levelSize);
             UpdateLevelGround();
 
-            for (int i = 0; i < levelTransformsList.Count; i++)
-                for (int j = 0; j < levelTransformsList.Count; j++)
+            for (int i = 0; i < levelObjectList.Count; i++)
+                for (int j = 0; j < levelObjectList.Count; j++)
                     UpdateLevelObjectTransform(i, j);
+
+            GameUI.Instance.UpdateLevelUI();
         }
 
         public void SetObject(Vector3 hitPosition)
         {
+            if (selectedButtonIndex == -2) return;
+
             int xIndex, yIndex;
 
             GridManager.Instance.GetGridIndices(hitPosition, out xIndex, out yIndex);
 
             if (PlayerDataManager.Instance.HasObjectIndex(xIndex, yIndex))
             {
+                if (selectedButtonIndex != -1) return;
+                
                 PlayerDataManager.Instance.RemoveObjectIndex(xIndex, yIndex);
 
                 DestroyLevelObject(xIndex, yIndex);
             }
             else
             {
-                PlayerDataManager.Instance.SetObjectIndex(xIndex, yIndex, 0);
+                if (selectedButtonIndex == -1) return;
 
-                CreateLevelObject(xIndex, yIndex, 0);
+                PlayerDataManager.Instance.SetObjectIndex(xIndex, yIndex, selectedButtonIndex);
+
+                CreateLevelObject(xIndex, yIndex, selectedButtonIndex);
             }
+
+            GameUI.Instance.UpdateLevelUI();
         }
 
         public void CreateLevelObject(int xIndex, int yIndex, int index)
         {
             if (index > -1 && index < levelObjectsPrefabs.Count)
             {
-                /* levelTransformsList[xIndex][yIndex] = Transform.Instantiate(
+                if (levelObjectsPrefabs[index].GetLevelObjectVariant() == LevelObjectVariant.Dynamic && playerLevelObjectTransform != null) return;
+
+                LevelObject levelObjectCopy = Instantiate(
                     levelObjectsPrefabs[index],
                     levelParent
-                ); */
+                );
+
+                levelObjectList[xIndex][yIndex] = levelObjectCopy;
+
+                if (levelObjectCopy.GetLevelObjectVariant() == LevelObjectVariant.Dynamic)
+                {
+                    dynamicLevelObjectList.Add((DynamicLevelObject) levelObjectCopy);
+
+                    if (levelObjectCopy.GetLevelObjectType() == LevelObjectType.Player)
+                        playerLevelObjectTransform = levelObjectCopy.transform;
+                }
 
                 UpdateLevelObjectTransform(xIndex, yIndex);
             }
@@ -92,44 +133,57 @@ namespace UnityTask
 
         void UpdateLevelGround()
         {
-            levelGround.localScale = GridManager.Instance.GridScale;
-
-
+            levelGround.localScale = new Vector3(
+                GridManager.Instance.GridSize, 
+                levelGround.localScale.y, 
+                GridManager.Instance.GridSize
+            );
         }
 
         void UpdateLevelObjectTransform(int xIndex, int yIndex)
         {
-            Transform levelObjectTransform = levelTransformsList[xIndex][yIndex];
-
-            if (levelObjectTransform == null) return;
-
-            levelObjectTransform.localPosition = GridManager.Instance.GetPosition(xIndex, yIndex);
-            levelObjectTransform.localRotation = Quaternion.identity;
-            levelObjectTransform.localScale = GridManager.Instance.GridCellScale;
+            if (levelObjectList[xIndex][yIndex] != null)
+                levelObjectList[xIndex][yIndex].InitTransform(
+                    GridManager.Instance.GetPosition(xIndex, yIndex)
+                );
         }
 
         public void DestroyLevelObject(int xIndex, int yIndex)
         {
-            if (levelTransformsList[xIndex][yIndex] == null)
+            if (levelObjectList[xIndex][yIndex] == null)
+            {
                 return;
+            }
             else
-                Destroy(levelTransformsList[xIndex][yIndex].gameObject);
+            {
+                LevelObject levelObject = levelObjectList[xIndex][yIndex];
+
+                if (levelObject.GetLevelObjectVariant() == LevelObjectVariant.Dynamic)
+                    dynamicLevelObjectList.Remove((DynamicLevelObject) levelObject);
+                
+                if (levelObject.GetLevelObjectType() == LevelObjectType.Player)
+                    playerLevelObjectTransform = null;
+                
+                Destroy(levelObjectList[xIndex][yIndex].gameObject);
+
+                levelObjectList[xIndex][yIndex] = null;
+            }
         }
 
         public void AddCells(int oldCellsCount, int newCellsCount)
         {
             for (int i = oldCellsCount; i < newCellsCount; i++)
             {
-                levelTransformsList.Add(new List<Transform>(newCellsCount));
+                levelObjectList.Add(new List<LevelObject>(newCellsCount));
                 
-                for (int j = 0; j < levelTransformsList[i].Capacity; j++)
-                    levelTransformsList[i].Add(null);
+                for (int j = 0; j < levelObjectList[i].Capacity; j++)
+                    levelObjectList[i].Add(null);
             }
 
             for (int i = 0; i < oldCellsCount; i++)
             {
                 for (int j = oldCellsCount; j < newCellsCount; j++)
-                    levelTransformsList[i].Add(null);
+                    levelObjectList[i].Add(null);
             }
 
             Display();
@@ -139,10 +193,10 @@ namespace UnityTask
         {
             for (int i = oldCellsCount-1; i >= newCellsCount; i--)
             {
-                for (int j = 0; j < levelTransformsList[i].Count; j++)
+                for (int j = 0; j < levelObjectList[i].Count; j++)
                     DestroyLevelObject(i, j);
 
-                levelTransformsList.RemoveAt(i);
+                levelObjectList.RemoveAt(i);
             }
             
             for (int i = newCellsCount-1; i >= 0; i--)
@@ -151,7 +205,7 @@ namespace UnityTask
                 {
                     DestroyLevelObject(i, j);
 
-                    levelTransformsList[i].RemoveAt(j);
+                    levelObjectList[i].RemoveAt(j);
                 }
             }
 
@@ -161,15 +215,15 @@ namespace UnityTask
         public void Display()
         {
             string output = "\n";
-            for (int i = 0; i < levelTransformsList.Count; i++)
+            for (int i = 0; i < levelObjectList.Count; i++)
             {
-                for (int j = 0; j < levelTransformsList[i].Count; j++)
-                    output += levelTransformsList[i][j] != null ? "+" : "-";
+                for (int j = 0; j < levelObjectList[i].Count; j++)
+                    output += levelObjectList[i][j] != null ? "+" : "-";
                 
                 output += "\n";
             }
 
-            Debug.Log(output);
+            // Debug.Log(output);
         }
 
         public void UpdateManager()
@@ -182,6 +236,38 @@ namespace UnityTask
                         Debug.DrawRay(GridManager.Instance.GetPosition(i, j), Vector3.up * 2, Color.red);
                 }
             }
+            
+            for (int i = 0; i < dynamicLevelObjectList.Count; i++)
+                dynamicLevelObjectList[i].UpdateLevelObject();
+        }
+
+        public void FixedUpdateManager()
+        {
+            for (int i = 0; i < dynamicLevelObjectList.Count; i++)
+                dynamicLevelObjectList[i].FixedUpdateLevelObject();
+        }
+
+        public int playerLayer;
+        public int obstacleLayer;
+        public int npcLayer;
+        public int collectableLayer;
+
+        void SetLayers()
+        {
+            playerLayer = GetLayerFromLevelObjectType(LevelObjectType.Player);
+            obstacleLayer = GetLayerFromLevelObjectType(LevelObjectType.Obstacle);
+            npcLayer = GetLayerFromLevelObjectType(LevelObjectType.NPC);
+            collectableLayer = GetLayerFromLevelObjectType(LevelObjectType.Collectable);
+        }
+
+        public int GetLayerFromLevelObjectType(LevelObjectType levelObjectType)
+        {
+            return (int)levelObjectType + GROUNDLAYER;
+        }
+
+        public LevelObjectType GetLevelObjectTypeFromLayer(int layer)
+        {
+            return (LevelObjectType)(layer - GROUNDLAYER);
         }
     }
 }

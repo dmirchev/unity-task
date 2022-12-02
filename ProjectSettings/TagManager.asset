@@ -11,11 +11,11 @@ TagManager:
   - 
   - Water
   - UI
-  - Player
   - Ground
+  - Player
   - Obstacle
-  - 
-  - 
+  - NPC
+  - Collectable
   - 
   - 
   - 

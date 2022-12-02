@@ -56,3 +56,8 @@ MonoBehaviour:
   - {fileID: 3424386369946364867, guid: 4111227bbbfc08040bbe12570b80a32d, type: 3}
   levelParent: {fileID: 0}
   levelGround: {fileID: 0}
+  selectedButtonIndex: 0
+  playerLayer: 0
+  obstacleLayer: 0
+  npcLayer: 0
+  collectableLayer: 0

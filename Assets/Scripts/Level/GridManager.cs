@@ -7,7 +7,13 @@ namespace UnityTask
     public class GridManager : Singleton<GridManager>
     {
         [SerializeField] [Range(1, 50)] private int gridSize = 1;
-        [SerializeField] [Range(1, 50)] public int gridCells = 1;
+        [SerializeField] [Range(1, 50)] private int gridCells = 1;
+
+        public static int GRIDMINVALUE = 1;
+        public static int GRIDMAXVALUE = 50;
+
+        public int GridSize { get { return gridSize; } set { gridSize = value; } }
+        public int GridCells { get { return gridCells; } set { gridCells = value; } }
 
         public float HalfGridSize { get { return gridSize * 0.5f; } }
         public Vector3 GridScale { get { return new Vector3(gridSize, 1, gridSize); } }

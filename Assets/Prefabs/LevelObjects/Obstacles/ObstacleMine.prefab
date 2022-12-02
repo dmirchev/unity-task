@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d58072cac5a9f004fa606273da874db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiButtonName: Mine
+  label: Mine
 --- !u!65 &1291929631363166058
 BoxCollider:
   m_ObjectHideFlags: 0

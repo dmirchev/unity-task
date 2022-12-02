@@ -34,7 +34,6 @@ namespace UnityTask
 
             aspectRatioWidth = Screen.width / defaultSceenWidth;
             aspectRatioHeight = Screen.height / defaultSceenHeight;
-            Debug.Log(aspectRatioHeight + " = " + Screen.height + " / " + defaultSceenHeight);
         }
 
         public float GetAspectRatioWidth()

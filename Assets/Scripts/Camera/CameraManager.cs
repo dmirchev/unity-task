@@ -20,7 +20,7 @@ namespace UnityTask
 
             _camera = GetComponent<Camera>();
 
-            layerMask = 1 << 7;
+            layerMask = 1 << LevelManager.GROUNDLAYER;
         }
 
         void Update()

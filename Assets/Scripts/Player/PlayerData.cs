@@ -86,7 +86,7 @@ namespace UnityTask
                 output += "\n";
             }
 
-            Debug.Log(output);
+            // Debug.Log(output);
         }
     }
 }

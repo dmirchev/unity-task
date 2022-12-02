@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityTask
 {
-    public class ObstacleLevelObject : LevelObject
+    public class ObstacleLevelObject : StaticLevelObject
     {
         public override LevelObjectType GetLevelObjectType()
         {

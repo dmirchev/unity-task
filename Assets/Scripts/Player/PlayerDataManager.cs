@@ -16,6 +16,7 @@ namespace UnityTask
         {
             playerData = new PlayerData();
 
+            // C:/Users/dmirc/AppData/LocalLow/DefaultCompany/Unity-Task
             jsonPath = Path.Combine(Application.persistentDataPath, jsonSaveFile);
 
             if(File.Exists(jsonPath))

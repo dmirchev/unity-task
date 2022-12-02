@@ -4,11 +4,16 @@ using UnityEngine;
 
 namespace UnityTask
 {
-    public class CollectableLevelObject : LevelObject
+    public abstract class CollectableLevelObject : StaticLevelObject
     {
         public override LevelObjectType GetLevelObjectType()
         {
             return LevelObjectType.Collectable;
+        }
+
+        public virtual void ExecuteCollectable()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

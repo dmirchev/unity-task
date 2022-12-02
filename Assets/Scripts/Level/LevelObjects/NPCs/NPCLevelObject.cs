@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityTask
 {
-    public class NPCLevelObject : LevelObject
+    public class NPCLevelObject : DynamicLevelObject
     {
         public override LevelObjectType GetLevelObjectType()
         {

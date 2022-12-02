@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityTask
 {
-    public class PlayerLevelObject : LevelObject
+    public class PlayerLevelObject : DynamicLevelObject
     {
         public override LevelObjectType GetLevelObjectType()
         {
