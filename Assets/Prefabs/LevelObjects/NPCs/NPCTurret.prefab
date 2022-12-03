@@ -68,6 +68,7 @@ MonoBehaviour:
     directionVelocityMaxSpeed: 8
     groundRayYOffset: 0
   target: {fileID: 0}
+  detectRadius: 10
   seekAmount: 1
   wanderAmount: 0
   wallAvoidanceAmount: 0

@@ -14,6 +14,10 @@ namespace UnityTask
         [Header("Target")]
         public Transform target;
 
+        [Header("Detect Radius")]
+        [SerializeField] private float detectRadius;
+        private float realDetectRadius;
+
         [Header("Steering Amounts")]
         [SerializeField] private float seekAmount;
         [SerializeField] private float wanderAmount;
@@ -56,6 +60,13 @@ namespace UnityTask
             target = LevelManager.Instance.Player;
 
             wallRaycastHits = new RaycastHit[1];
+
+            realDetectRadius = detectRadius * GridManager.Instance.GetGridSizeRatio();
+        }
+
+        protected bool IsTagertInRange()
+        {
+            return (target.localPosition - physicsEntity.Position).magnitude <= realDetectRadius;
         }
 
         public override void GetInput()
@@ -67,7 +78,7 @@ namespace UnityTask
             physicsEntity.ForwardBackwardsInputDirection = Mathf.RoundToInt(steeringForce.z);
             physicsEntity.LeftRightInputDirection = Mathf.RoundToInt(steeringForce.x);
 
-            if (shoot)
+            if (shoot && IsTagertInRange())
             {
                 shootTimer += Time.deltaTime;
 
@@ -85,7 +96,7 @@ namespace UnityTask
             Vector3 targetPosition = target.localPosition;
             targetPosition.y = 0;
 
-            if (target != null)
+            if (IsTagertInRange())
                 steeringForce += Seek(targetPosition) * seekAmount;
                 
             steeringForce += Wander() * wanderAmount;

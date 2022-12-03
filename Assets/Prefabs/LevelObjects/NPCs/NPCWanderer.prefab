@@ -68,6 +68,7 @@ MonoBehaviour:
     directionVelocityMaxSpeed: 8
     groundRayYOffset: 0
   target: {fileID: 0}
+  detectRadius: 0
   seekAmount: 0
   wanderAmount: 1
   wallAvoidanceAmount: 1
@@ -75,10 +76,13 @@ MonoBehaviour:
   wanderDistance: 2.75
   wanderJitter: 0.2
   wanderTarget: {x: 0, y: 0, z: 0}
-  playerHitForce: 5
-  playerDamage: 5
   radnomTime: 2
   rayCastWallDistance: 4.51
+  playerHitForce: 5
+  playerDamage: 5
+  shoot: 0
+  shootTime: 0
+  bullet: {fileID: 0}
 --- !u!54 &1715398777605739837
 Rigidbody:
   m_ObjectHideFlags: 0
