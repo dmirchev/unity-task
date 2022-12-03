@@ -52,17 +52,11 @@ MonoBehaviour:
     _rigidbody: {fileID: 1715398777605739837}
     _capsuleCollider: {fileID: 2946608781341806134}
     _modelTransform: {fileID: 1796820026854158157}
-    groundLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    castLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
     velocity: {x: 0, y: 0, z: 0}
     maxVelocity: 1
-    maxSpeed: 12
-    acceleration: 40
-    deceleration: -40
+    maxSpeed: 3
+    acceleration: 10
+    deceleration: -10
     jumpForce: 40
     gravity: -150
     gravityClamp: -40
@@ -75,8 +69,16 @@ MonoBehaviour:
     groundRayYOffset: 0
   target: {fileID: 0}
   seekAmount: 0
+  wanderAmount: 1
+  wallAvoidanceAmount: 1
+  wanderRadius: 2.25
+  wanderDistance: 2.75
+  wanderJitter: 0.2
+  wanderTarget: {x: 0, y: 0, z: 0}
   playerHitForce: 5
   playerDamage: 5
+  radnomTime: 2
+  rayCastWallDistance: 4.51
 --- !u!54 &1715398777605739837
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -216,8 +218,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4638539252511388876}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.25, z: 0.5}
-  m_LocalScale: {x: 0.7, y: 0.5, z: 0.3}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0}
+  m_LocalScale: {x: 1.1, y: 0.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1796820026854158157}

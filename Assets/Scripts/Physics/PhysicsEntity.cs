@@ -12,8 +12,10 @@ namespace UnityTask
         [SerializeField] private CapsuleCollider _capsuleCollider;
         [SerializeField] private Transform _modelTransform;
 
-        public LayerMask groundLayerMask;
-        public LayerMask castLayerMask;
+        private LayerMask groundLayerMask;
+        private LayerMask obstacleLayerMask;
+
+        public LayerMask ObstacleLayerMask { get { return obstacleLayerMask; } }
 
         [SerializeField] private Vector3 velocity;
         public Vector3 Velocity { get { return velocity; } }
@@ -52,7 +54,7 @@ namespace UnityTask
             InitCastArrays();
 
             groundLayerMask = (1 << LevelManager.GROUNDLAYER) | (1 << LevelManager.Instance.obstacleLayer);
-            castLayerMask = 1 << LevelManager.Instance.obstacleLayer;
+            obstacleLayerMask = 1 << LevelManager.Instance.obstacleLayer;
         }
 
         void InitCastArrays()
@@ -241,7 +243,7 @@ namespace UnityTask
             Vector3 point0, point1;
             GetCapsileCenters(castPosition, out point0, out point1);
 
-            int count = Physics.OverlapCapsuleNonAlloc(point0, point1, _capsuleCollider.radius, wallCollider, castLayerMask);
+            int count = Physics.OverlapCapsuleNonAlloc(point0, point1, _capsuleCollider.radius, wallCollider, obstacleLayerMask);
 
             // Get Intersections
             for (int i = 0; i < count; i++)
@@ -312,7 +314,7 @@ namespace UnityTask
             return -oppositeWallVector / Time.fixedDeltaTime;
         }
 
-        void GetCapsileCenters(Vector3 castPosition, out Vector3 point0, out Vector3 point1)
+        public void GetCapsileCenters(Vector3 castPosition, out Vector3 point0, out Vector3 point1)
         {
             point0 = castPosition + Vector3.up * _capsuleCollider.radius;
             point1 = castPosition + Vector3.up * (_capsuleCollider.bounds.size.y - _capsuleCollider.radius);

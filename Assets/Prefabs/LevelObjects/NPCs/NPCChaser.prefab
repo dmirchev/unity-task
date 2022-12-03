@@ -60,9 +60,9 @@ MonoBehaviour:
       m_Bits: 0
     velocity: {x: 0, y: 0, z: 0}
     maxVelocity: 1
-    maxSpeed: 12
-    acceleration: 40
-    deceleration: -40
+    maxSpeed: 6
+    acceleration: 20
+    deceleration: -20
     jumpForce: 40
     gravity: -150
     gravityClamp: -40
@@ -75,8 +75,14 @@ MonoBehaviour:
     groundRayYOffset: 0
   target: {fileID: 0}
   seekAmount: 1
+  wanderAmount: 0
+  wanderRadius: 0
+  wanderDistance: 0
+  wanderJitter: 0
+  wanderTarget: {x: 0, y: 0, z: 0}
   playerHitForce: 5
   playerDamage: 5
+  radnomTime: 0
 --- !u!54 &8030718566547121201
 Rigidbody:
   m_ObjectHideFlags: 0
