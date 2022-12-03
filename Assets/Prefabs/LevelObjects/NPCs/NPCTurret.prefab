@@ -52,17 +52,11 @@ MonoBehaviour:
     _rigidbody: {fileID: 1767562216623208492}
     _capsuleCollider: {fileID: 2946608781341806134}
     _modelTransform: {fileID: 395163987986185169}
-    groundLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    castLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
     velocity: {x: 0, y: 0, z: 0}
-    maxVelocity: 1
-    maxSpeed: 12
-    acceleration: 40
-    deceleration: -40
+    maxVelocity: 2
+    maxSpeed: 2
+    acceleration: 0
+    deceleration: 0
     jumpForce: 40
     gravity: -150
     gravityClamp: -40
@@ -74,14 +68,20 @@ MonoBehaviour:
     directionVelocityMaxSpeed: 8
     groundRayYOffset: 0
   target: {fileID: 0}
-  seekAmount: 0
+  seekAmount: 1
   wanderAmount: 0
+  wallAvoidanceAmount: 0
   wanderRadius: 0
   wanderDistance: 0
   wanderJitter: 0
   wanderTarget: {x: 0, y: 0, z: 0}
+  radnomTime: 0
+  rayCastWallDistance: 0
   playerHitForce: 5
   playerDamage: 5
+  shoot: 1
+  shootTime: 3
+  bullet: {fileID: 7625179295897470139, guid: 7ee616705bfc30845aff9bb639571a3f, type: 3}
 --- !u!54 &1767562216623208492
 Rigidbody:
   m_ObjectHideFlags: 0

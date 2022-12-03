@@ -25,6 +25,13 @@ namespace UnityTask
         public float wanderJitter;
         public Vector3 wanderTarget;
 
+        [SerializeField] private float radnomTime;
+        float randomTimer;
+
+        [Header("Wall Avoidance")]
+        public float rayCastWallDistance;
+        RaycastHit[] wallRaycastHits = new RaycastHit[1];
+
         float GetRandomWander()
         {
             return Random.Range(-1.0f, 1.0f);
@@ -33,6 +40,13 @@ namespace UnityTask
         [Header("Damage")]
         [SerializeField] private float playerHitForce;
         [SerializeField] private float playerDamage;
+
+        [Header("Shoot")]
+        [SerializeField] private bool shoot;
+        [SerializeField] private float shootTime;
+        private float shootTimer;
+
+        [SerializeField] private Bullet bullet;
         
 
         protected override void Init()
@@ -52,6 +66,17 @@ namespace UnityTask
 
             physicsEntity.ForwardBackwardsInputDirection = Mathf.RoundToInt(steeringForce.z);
             physicsEntity.LeftRightInputDirection = Mathf.RoundToInt(steeringForce.x);
+
+            if (shoot)
+            {
+                shootTimer += Time.deltaTime;
+
+                if (shootTimer >= shootTime)
+                {
+                    shootTimer = 0;
+                    Shoot(target.localPosition);
+                }
+            }
         }
 
         private Vector3 Calculate()
@@ -74,9 +99,6 @@ namespace UnityTask
             Vector3 desiredVelocity = (targetPosition - physicsEntity.Position).normalized * physicsEntity.MaxSpeed;
             return desiredVelocity - physicsEntity.Velocity;
         }
-
-        float randomTimer;
-        public float radnomTime;
 
         Vector3 Wander()
         {
@@ -102,9 +124,6 @@ namespace UnityTask
             Quaternion rotation = Quaternion.LookRotation(refDirection);
             return refPosition + rotation * target;
         }
-
-        public float rayCastWallDistance;
-        RaycastHit[] wallRaycastHits = new RaycastHit[1];
 
         Vector3 WallAvoidance()
         {
@@ -134,6 +153,17 @@ namespace UnityTask
                 GameManager.Instance.ApplyDamage(playerDamage);
                 other.GetComponent<PlayerLevelObject>().AddForce(physicsEntity.Position, playerHitForce);
             }
+        }
+
+        private void Shoot(Vector3 target)
+        {
+            Vector3 point0, point1;
+            physicsEntity.GetCapsileCenters(physicsEntity.Position, out point0, out point1);
+
+            Vector3 direction = (target - point0).normalized;
+            float angle = Mathf.Atan2(direction.x, direction.z);
+
+            Bullet bulletCopy = Instantiate(bullet, point0, Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.up));
         }
     }
 }
