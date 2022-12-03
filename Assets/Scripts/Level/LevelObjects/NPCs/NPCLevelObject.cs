@@ -73,8 +73,6 @@ namespace UnityTask
         {
             Vector3 steeringForce = Calculate();
 
-            Debug.DrawRay(physicsEntity.Position, steeringForce, Color.red);
-
             physicsEntity.ForwardBackwardsInputDirection = Mathf.RoundToInt(steeringForce.z);
             physicsEntity.LeftRightInputDirection = Mathf.RoundToInt(steeringForce.x);
 

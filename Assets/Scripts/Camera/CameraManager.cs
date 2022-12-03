@@ -32,8 +32,6 @@ namespace UnityTask
                 Vector3 rayCastStartWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 direction = transform.localRotation * Vector3.forward;
 
-                Debug.DrawRay(rayCastStartWorldPosition, direction * FarClipPlane, Color.red, 20.0f);
-
                 if (Physics.RaycastNonAlloc(rayCastStartWorldPosition, direction, hits, FarClipPlane, layerMask) > 0)
                     LevelManager.Instance.SetObject(hits[0].point);
             }

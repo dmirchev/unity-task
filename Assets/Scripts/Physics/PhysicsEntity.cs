@@ -119,9 +119,6 @@ namespace UnityTask
 
                 float directionSpeed = Mathf.Lerp(directionVelocityMinSpeed, directionVelocityMaxSpeed, -dotMin);
 
-                Debug.DrawRay(_rigidbody.position, new Vector3(oldDirection.x, 0, oldDirection.y).normalized * 5, Color.red);
-                Debug.DrawRay(_rigidbody.position, new Vector3(newDirection.x, 0, newDirection.y).normalized * 5, Color.green);
-
                 directionVelocity.x = Mathf.Lerp(directionVelocity.x, leftRightInputDirection, directionSpeed * Time.deltaTime);
                 directionVelocity.z = Mathf.Lerp(directionVelocity.z, forwardBackwardsInputDirection, directionSpeed * Time.deltaTime);
             }
@@ -224,8 +221,6 @@ namespace UnityTask
         bool CheckGround(Vector3 castPosition)
         {
             float halfPlayerHeight = _capsuleCollider.bounds.size.y * 0.5f;
-            Debug.DrawRay(castPosition, Vector3.right * 20, Color.blue);
-            Debug.DrawRay(castPosition + Vector3.up * halfPlayerHeight, Vector3.down * (halfPlayerHeight + groundRayYOffset), Color.black);
             
             return Physics.RaycastNonAlloc(castPosition + Vector3.up * halfPlayerHeight, Vector3.down, groundHits, halfPlayerHeight + groundRayYOffset, groundLayerMask) > 0;
         }
@@ -248,23 +243,7 @@ namespace UnityTask
             // Get Intersections
             for (int i = 0; i < count; i++)
             {
-                Debug.DrawRay(
-                    wallCollider[i].bounds.center - wallCollider[i].bounds.size * 0.5f,
-                    (Vector3.forward + Vector3.right).normalized * wallCollider[i].bounds.size.magnitude,
-                    Color.red
-                );
-
-                switch (LevelManager.Instance.GetLevelObjectTypeFromLayer(wallCollider[i].gameObject.layer))
-                {
-                    case LevelObjectType.Obstacle:
-                        GetCollisionEdge(castPosition, wallCollider[i], i);
-                        break;
-                    case LevelObjectType.NPC:
-                        break;
-                    case LevelObjectType.Collectable:
-                        wallCollider[i].GetComponent<CollectableLevelObject>().ExecuteCollectable();
-                        break;
-                }
+                GetCollisionEdge(castPosition, wallCollider[i], i);
                 
             }
 
@@ -334,11 +313,7 @@ namespace UnityTask
             float NearestY = Mathf.Max(boxTopRightEdge.y, Mathf.Min(castPosition.y, boxBottomLeftEdge.y));
             float NearestZ = Mathf.Max(boxTopRightEdge.z, Mathf.Min(castPosition.z, boxBottomLeftEdge.z));
 
-            Debug.DrawLine(boxTopRightEdge, castPosition, Color.red);
-            Debug.DrawLine(boxBottomLeftEdge, castPosition, Color.red);
-
             Vector3 nearestPoint = new Vector3(NearestX, NearestY, NearestZ);
-            Debug.DrawRay(nearestPoint + Vector3.up * boxCollider.bounds.size.y, Vector3.forward * 50, Color.yellow);
 
             // Find Nearest Point on Edge on Circle
             Vector3 directionFromCastPositionToNearestPoint = (nearestPoint - castPosition).normalized;
@@ -346,11 +321,6 @@ namespace UnityTask
 
             // Intesection
             Vector3 intersectiorn = nearestOnCircle - nearestPoint;
-
-            Debug.DrawRay(nearestPoint + Vector3.up * 5, intersectiorn, Color.black);
-            Debug.DrawRay(nearestOnCircle + Vector3.up * boxCollider.bounds.size.y, Vector3.forward * 50, Color.magenta);
-
-            Debug.DrawRay(castPosition + new Vector3((index+1) * 0.25f, _capsuleCollider.height, 1.0f), intersectiorn, Color.black);
 
             wallColliderIntersections[index] = intersectiorn;
         }

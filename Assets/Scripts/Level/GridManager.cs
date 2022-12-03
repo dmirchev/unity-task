@@ -93,6 +93,11 @@ namespace UnityTask
             return gridSize / DEFAILTGROUNDSIZE;
         }
 
+        public float GetGridSizeRatioOpposite()
+        {
+            return DEFAILTGROUNDSIZE / gridSize;
+        }
+
         void OnDrawGizmos()
         {
             // Borders

@@ -232,21 +232,10 @@ namespace UnityTask
                 
                 output += "\n";
             }
-
-            // Debug.Log(output);
         }
 
         public void UpdateManager()
         {
-            for (int i = 0; i < PlayerDataManager.Instance.playerData.level.Count; i++)
-            {
-                for (int j = 0; j < PlayerDataManager.Instance.playerData.level[i].row.Count; j++)
-                {
-                    if (PlayerDataManager.Instance.playerData.level[i].row[j] > -1)
-                        Debug.DrawRay(GridManager.Instance.GetPosition(i, j), Vector3.up * 2, Color.red);
-                }
-            }
-            
             for (int i = 0; i < dynamicLevelObjectList.Count; i++)
                 dynamicLevelObjectList[i].UpdateLevelObject();
         }
