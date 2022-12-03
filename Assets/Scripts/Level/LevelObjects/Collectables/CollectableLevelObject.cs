@@ -21,6 +21,11 @@ namespace UnityTask
             gameObject.SetActive(false);
         }
 
+        public void Update()
+        {
+            transform.GetChild(0).localRotation = Quaternion.AngleAxis(Time.time * Mathf.PI * 20.0f, Vector3.up);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.layer == LevelManager.Instance.playerLayer)
