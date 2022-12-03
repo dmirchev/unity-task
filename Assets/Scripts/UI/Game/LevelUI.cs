@@ -5,11 +5,8 @@ using UnityEngine.UI;
 
 namespace UnityTask
 {
-    public class LevelUI : MonoBehaviour
+    public class LevelUI : UI
     {
-        [Header("Content")]
-        [SerializeField] private GameObject contentGameObject;
-
         [Header("Level Objects Scroll View")]
         [SerializeField] private RectTransform levelObjectsScrollViewContentetRectTransform;
 
@@ -35,7 +32,7 @@ namespace UnityTask
         [SerializeField] private Slider gridSizeSlider;
         [SerializeField] private Slider gridCellsSlider;
 
-        public void CreateUI()
+        public override void CreateUI()
         {
             int levelObjectTypeCount = (int)LevelObjectType.Count;
             
@@ -97,15 +94,10 @@ namespace UnityTask
             );
         }
 
-        public void SetContentState(bool state)
-        {
-            contentGameObject.SetActive(state);
-        }
-
-        public void InitUI()
+        public override void InitUI()
         {
             lastSelectedFlexibleGridElement = null;
-            
+
             InitSliders();
 
             UpdateUI();
@@ -142,7 +134,7 @@ namespace UnityTask
             SetButtonInteractableState(lastSelectedFlexibleGridElement, false);
         }
 
-        public void UpdateUI()
+        public override void UpdateUI()
         {
             for (int i = 0; i < gridElements.Count; i++)
                 SetButtonInteractableState(gridElements[i]);

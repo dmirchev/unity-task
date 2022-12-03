@@ -4,27 +4,19 @@ using UnityEngine.UI;
 
 namespace UnityTask
 {
-    public class StatsUI : MonoBehaviour
+    public class StatsUI : UI
     {
-        [Header("Content")]
-        [SerializeField] private GameObject contentGameObject;
-        
         [SerializeField] private Slider healthSlider;
         [SerializeField] private TMP_Text coinsText;
 
-        public void SetContentState(bool state)
-        {
-            contentGameObject.SetActive(state);
-        }
-
-        public void CreateUI()
+        public override void CreateUI()
         {
             healthSlider.maxValue = GameManager.Instance.maxHealth;
         }
 
-        public void InitUI()
+        public override void InitUI()
         {
-            UpdateHealth(1);
+            UpdateHealth(GameManager.Instance.maxHealth);
             UpdateCoins(0);
         }
 
