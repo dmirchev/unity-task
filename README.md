@@ -16,3 +16,7 @@ Version: 2021.2.8
 
 - NPCs
   - Steering Behaviors
+
+Future Features
+- Animations
+- Better Architecture and Optimisation
