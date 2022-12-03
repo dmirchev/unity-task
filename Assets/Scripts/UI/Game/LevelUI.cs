@@ -128,7 +128,7 @@ namespace UnityTask
 
         public void OnClickLevelUIButton(int buttonIndex)
         {
-            LevelManager.Instance.selectedButtonIndex = buttonIndex;
+            LevelManager.Instance.selectedLevelObjectIndex = buttonIndex;
 
             SetButtonsState(buttonIndex);
         }
@@ -185,12 +185,12 @@ namespace UnityTask
 
         void OnValueChangedGridSize(float value)
         {
-            GridManager.Instance.GridSize = (int)value;
+            GridManager.Instance.UpdateGridSize((int)value);
         }
 
         void OnValueChangedGridCells(float value)
         {
-            GridManager.Instance.GridCells = (int)value;
+            GridManager.Instance.UpdateGridCells((int)value);
         }
     }
 }

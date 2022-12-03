@@ -13,7 +13,9 @@ namespace UnityTask
             gameState = GameState.None;
             PlayerDataManager.Instance.Create(
                 () => {
+
                     CreateManagers();
+
                     GameStateEdit();
                 }
             );
@@ -21,6 +23,9 @@ namespace UnityTask
 
         public void CreateManagers()
         {
+            GridManager.Instance.CreateManager();
+            LevelManager.Instance.CreateManager();
+
             GameUI.Instance.CreateUIs();
         }
 
@@ -54,17 +59,13 @@ namespace UnityTask
 
         void InitManagers()
         {
-            GridManager.Instance.InitManager();
             LevelManager.Instance.InitManager();
-
-            gameState = GameState.Edit;
         }
 
         void Update()
         {
             if (gameState == GameState.Play)
             {
-                GridManager.Instance.UpdateManager();
                 LevelManager.Instance.UpdateManager();
             }
         }

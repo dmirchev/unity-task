@@ -14,6 +14,8 @@ namespace UnityTask
 
         LayerMask layerMask;
 
+        public static float DEFAILTCAMERASIZE = 11.5f;
+
         public override void Awake()
         {
             base.Awake();
@@ -35,6 +37,11 @@ namespace UnityTask
                 if (Physics.RaycastNonAlloc(rayCastStartWorldPosition, direction, hits, FarClipPlane, layerMask) > 0)
                     LevelManager.Instance.SetObject(hits[0].point);
             }
+        }
+
+        public void UpdateCamera(float ratio)
+        {
+            _camera.orthographicSize = ratio * DEFAILTCAMERASIZE;
         }
     }
 }

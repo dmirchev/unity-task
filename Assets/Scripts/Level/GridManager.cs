@@ -12,8 +12,8 @@ namespace UnityTask
         public static int GRIDMINVALUE = 1;
         public static int GRIDMAXVALUE = 50;
 
-        public int GridSize { get { return gridSize; } set { gridSize = value; } }
-        public int GridCells { get { return gridCells; } set { gridCells = value; } }
+        public int GridSize { get { return gridSize; } }
+        public int GridCells { get { return gridCells; } }
 
         public float HalfGridSize { get { return gridSize * 0.5f; } }
         public Vector3 GridScale { get { return new Vector3(gridSize, 1, gridSize); } }
@@ -22,12 +22,13 @@ namespace UnityTask
         public Vector3 TopRightCorner { get { return new Vector3(HalfGridSize, 0, HalfGridSize); } }
 
         public float GridCellSize { get { return (float)gridSize / gridCells; } }
-        public Vector3 GridCellScale { get { return new Vector3(GridCellSize, 1, GridCellSize); } }
 
         int oldGridSize;
         int oldGridCells;
 
-        public void InitManager()
+        public static float DEFAILTGROUNDSIZE = 20.0f;
+
+        public void CreateManager()
         {
             gridSize = PlayerDataManager.Instance.playerData.levelSize;
             gridCells = PlayerDataManager.Instance.playerData.level.Count;
@@ -39,24 +40,36 @@ namespace UnityTask
         {
             oldGridSize = gridSize;
             oldGridCells = gridCells;
+
+            UpdateCamera();
         }
 
-        public void UpdateManager()
+        public void UpdateGridSize(int newGridSize)
         {
-            Vector3 pos = new Vector3(4, 0, 4);
+            gridSize = newGridSize;
 
-            pos *= GridCellSize;
-            pos += new Vector3(0.5f, 0, 0.5f) * GridCellSize;
-            pos += BottomLeftCorner;
+            UpdateLevel();
 
-            Debug.DrawRay(pos, Vector3.up * 5, Color.red);
+            UpdateCamera();
+        }
 
-            if (gridSize != oldGridSize || gridCells != oldGridCells)
-            {
-                LevelManager.Instance.UpdateList(gridSize, gridCells > oldGridCells, oldGridCells, gridCells);
+        public void UpdateGridCells(int newGridCells)
+        {
+            gridCells = newGridCells;
 
-                SetOldValues();
-            }
+            UpdateLevel();
+        }
+
+        void UpdateLevel()
+        {
+            LevelManager.Instance.UpdateList(gridSize, gridCells > oldGridCells, oldGridCells, gridCells);
+
+            SetOldValues();
+        }
+
+        void UpdateCamera()
+        {
+            CameraManager.Instance.UpdateCamera(GridManager.Instance.GetGridSizeRatio());
         }
 
         public Vector3 GetPosition(int xIndex, int yIndex)
@@ -73,6 +86,11 @@ namespace UnityTask
         {
             xIndex = Mathf.FloorToInt((worldPosition.x - BottomLeftCorner.x) / GridCellSize);
             yIndex = Mathf.FloorToInt((worldPosition.z - BottomLeftCorner.z) / GridCellSize);
+        }
+
+        public float GetGridSizeRatio()
+        {
+            return gridSize / DEFAILTGROUNDSIZE;
         }
 
         void OnDrawGizmos()

@@ -10,5 +10,10 @@ namespace UnityTask
         {
             return LevelObjectType.Obstacle;
         }
+
+        protected override Vector3 GetLocalScale()
+        {
+            return new Vector3(GridManager.Instance.GridCellSize, 1, GridManager.Instance.GridCellSize);
+        }
     }
 }

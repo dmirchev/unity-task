@@ -9,7 +9,7 @@ namespace UnityTask
         [Header("UIs")]
         [SerializeField] private StatsUI statsUI;
         [SerializeField] private LevelUI levelUI;
-        [SerializeField] private Button toggleGameStateButton;
+        [SerializeField] private Button gameStateButton;
         [SerializeField] private TMP_Text gameStateButtonText;
 
         [Header("UI Managers")]
@@ -22,7 +22,7 @@ namespace UnityTask
         {
             levelUI.CreateUI();
 
-            toggleGameStateButton.onClick.AddListener(OnClickGameStateButton);
+            gameStateButton.onClick.AddListener(OnClickGameStateButton);
         }
 
         public void OnClickGameStateButton()
@@ -50,9 +50,16 @@ namespace UnityTask
             levelUI.InitUI();
         }
 
+        public void CheckGameStateButtonState()
+        {
+            gameStateButton.interactable = LevelManager.Instance.hasPlayer;
+        }
+
         public void UpdateLevelUI()
         {
             levelUI.UpdateUI();
+
+            CheckGameStateButtonState();
         }
 
         void LateUpdate()

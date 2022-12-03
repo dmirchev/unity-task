@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 3
-  m_AspectRatio: 0.75
+  m_AspectRatio: 0.6851852
 --- !u!1 &1721960916942026247
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 0.8148148
+  m_FlexibleWidth: 0.8918919
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!1 &1721960917420379788
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 0.09259259
+  m_FlexibleWidth: 0.054054055
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!1 &1721960917772429977
@@ -293,7 +293,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 0.09259259
+  m_FlexibleWidth: 0.054054055
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!1 &1721960918167297428

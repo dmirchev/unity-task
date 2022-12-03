@@ -15,6 +15,7 @@ namespace UnityTask
         private List<List<LevelObject>> levelObjectList;
         private List<DynamicLevelObject> dynamicLevelObjectList;
         private Transform playerLevelObjectTransform;
+        public Transform Player { get { return playerLevelObjectTransform; } }
 
         public bool hasPlayer { get { return playerLevelObjectTransform != null; } }
 
@@ -22,11 +23,11 @@ namespace UnityTask
 
         public List<LevelObject> LevelObjectsPrefabs { get { return levelObjectsPrefabs; } }
 
-        public int selectedButtonIndex;
+        public int selectedLevelObjectIndex;
 
         public static int GROUNDLAYER = 6;
 
-        public void InitManager()
+        public void CreateManager()
         {
             SetLayers();
 
@@ -47,10 +48,14 @@ namespace UnityTask
                     CreateLevelObject(i, j, PlayerDataManager.Instance.GetObjectIndex(i, j));
                 }
             }
+        }
 
+        public void InitManager()
+        {
+            selectedLevelObjectIndex = -2;
+
+            InitLevelObjects();
             UpdateLevelGround();
-
-            selectedButtonIndex = -2;
 
             GameUI.Instance.UpdateLevelUI();
         }
@@ -71,16 +76,21 @@ namespace UnityTask
             PlayerDataManager.Instance.SetLevelSize(levelSize);
             UpdateLevelGround();
 
-            for (int i = 0; i < levelObjectList.Count; i++)
-                for (int j = 0; j < levelObjectList.Count; j++)
-                    UpdateLevelObjectTransform(i, j);
+            InitLevelObjects();
 
             GameUI.Instance.UpdateLevelUI();
         }
 
+        void InitLevelObjects()
+        {
+            for (int i = 0; i < levelObjectList.Count; i++)
+                for (int j = 0; j < levelObjectList.Count; j++)
+                    InitLevelObject(i, j);
+        }
+
         public void SetObject(Vector3 hitPosition)
         {
-            if (selectedButtonIndex == -2) return;
+            if (selectedLevelObjectIndex == -2) return;
 
             int xIndex, yIndex;
 
@@ -88,7 +98,7 @@ namespace UnityTask
 
             if (PlayerDataManager.Instance.HasObjectIndex(xIndex, yIndex))
             {
-                if (selectedButtonIndex != -1) return;
+                if (selectedLevelObjectIndex != -1) return;
                 
                 PlayerDataManager.Instance.RemoveObjectIndex(xIndex, yIndex);
 
@@ -96,11 +106,11 @@ namespace UnityTask
             }
             else
             {
-                if (selectedButtonIndex == -1) return;
+                if (selectedLevelObjectIndex == -1) return;
 
-                PlayerDataManager.Instance.SetObjectIndex(xIndex, yIndex, selectedButtonIndex);
+                PlayerDataManager.Instance.SetObjectIndex(xIndex, yIndex, selectedLevelObjectIndex);
 
-                CreateLevelObject(xIndex, yIndex, selectedButtonIndex);
+                CreateLevelObject(xIndex, yIndex, selectedLevelObjectIndex);
             }
 
             GameUI.Instance.UpdateLevelUI();
@@ -110,7 +120,7 @@ namespace UnityTask
         {
             if (index > -1 && index < levelObjectsPrefabs.Count)
             {
-                if (levelObjectsPrefabs[index].GetLevelObjectVariant() == LevelObjectVariant.Dynamic && playerLevelObjectTransform != null) return;
+                if (levelObjectsPrefabs[index].GetLevelObjectType() == LevelObjectType.Player && playerLevelObjectTransform != null) return;
 
                 LevelObject levelObjectCopy = Instantiate(
                     levelObjectsPrefabs[index],
@@ -127,7 +137,7 @@ namespace UnityTask
                         playerLevelObjectTransform = levelObjectCopy.transform;
                 }
 
-                UpdateLevelObjectTransform(xIndex, yIndex);
+                InitLevelObject(xIndex, yIndex);
             }
         }
 
@@ -140,10 +150,10 @@ namespace UnityTask
             );
         }
 
-        void UpdateLevelObjectTransform(int xIndex, int yIndex)
+        void InitLevelObject(int xIndex, int yIndex)
         {
             if (levelObjectList[xIndex][yIndex] != null)
-                levelObjectList[xIndex][yIndex].InitTransform(
+                levelObjectList[xIndex][yIndex].InitLevelObject(
                     GridManager.Instance.GetPosition(xIndex, yIndex)
                 );
         }

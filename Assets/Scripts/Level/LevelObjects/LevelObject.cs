@@ -15,11 +15,23 @@ namespace UnityTask
 
         public virtual void LevelObjectAwake() { return; }
 
-        public virtual void InitTransform(Vector3 localPosition)
+        public virtual void InitLevelObject(Vector3 localPosition)
         {
             transform.localPosition = localPosition;
             transform.localRotation = Quaternion.identity;
-            transform.localScale = GridManager.Instance.GridCellScale;
+            transform.localScale = GetLocalScale();
+
+            Init();
+        }
+
+        protected virtual void Init()
+        {
+            return;
+        }
+
+        protected virtual Vector3 GetLocalScale()
+        {
+            return Vector3.one;
         }
     }
 

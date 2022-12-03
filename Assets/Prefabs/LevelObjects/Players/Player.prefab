@@ -52,8 +52,15 @@ MonoBehaviour:
     _rigidbody: {fileID: 1816834144354205165}
     _capsuleCollider: {fileID: 2946608781341806134}
     _modelTransform: {fileID: 7058638886059305625}
+    groundLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    castLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
     velocity: {x: 0, y: 0, z: 0}
-    maxHorizontalVelocity: 12
+    maxVelocity: 1
+    maxSpeed: 12
     acceleration: 40
     deceleration: -40
     jumpForce: 40
@@ -64,6 +71,10 @@ MonoBehaviour:
     directionVelocityMinSpeed: 2
     directionVelocityMaxSpeed: 8
     groundRayYOffset: 0
+  forward: {x: 1, y: 1}
+  back: {x: -1, y: -1}
+  left: {x: -1, y: 1}
+  right: {x: 1, y: -1}
 --- !u!54 &1816834144354205165
 Rigidbody:
   m_ObjectHideFlags: 0

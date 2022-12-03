@@ -8,6 +8,7 @@ namespace UnityTask
     public class PhysicsEntity
     {
         [SerializeField] private Rigidbody _rigidbody;
+        public Vector3 Position { get { return _rigidbody.position; } }
         [SerializeField] private CapsuleCollider _capsuleCollider;
         [SerializeField] private Transform _modelTransform;
 
@@ -15,8 +16,12 @@ namespace UnityTask
         public LayerMask castLayerMask;
 
         [SerializeField] private Vector3 velocity;
+        public Vector3 Velocity { get { return velocity; } }
+        [SerializeField] private float maxVelocity;
+        public float MaxVelocity { get { return maxVelocity; } }
 
-        [SerializeField] private float maxHorizontalVelocity;
+        [SerializeField] private float maxSpeed;
+        public float MaxSpeed { get { return maxSpeed; } }
 
         [SerializeField] private float acceleration;
         [SerializeField] private float deceleration;
@@ -27,61 +32,53 @@ namespace UnityTask
 
         public float rotaionSmoothSpeed = 1.0f;
 
-        int forwardBackwardsInputDirection;
-        int leftRightInputDirection;
+        [SerializeField] float forwardBackwardsInputDirection;
+        [SerializeField] float leftRightInputDirection;
+
+        public float ForwardBackwardsInputDirection { set { forwardBackwardsInputDirection = value; } }
+        public float LeftRightInputDirection { set { leftRightInputDirection = value; } }
 
         bool jumpInput;
+        public bool JumpInput { set { jumpInput = value; } }
+
+        bool resetInput;
+        public bool ResetInput { set { resetInput = value; } }
 
         [Header("Direction Driven")]
         public Vector3 directionVelocity;
 
         public void Create()
         {
-            groundHits = new RaycastHit[1];
-
-            wallCollider = new Collider[4];
-            wallColliderIntersections = new Vector3[4];
+            InitCastArrays();
 
             groundLayerMask = (1 << LevelManager.GROUNDLAYER) | (1 << LevelManager.Instance.obstacleLayer);
             castLayerMask = 1 << LevelManager.Instance.obstacleLayer;
         }
 
-        public void Update()
+        void InitCastArrays()
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                forwardBackwardsInputDirection = 1;
-            }
-            
-            if (Input.GetKey(KeyCode.S))
-            {
-                forwardBackwardsInputDirection = -1;
-            }
+            groundHits = new RaycastHit[1];
 
-            if (Input.GetKey(KeyCode.A))
-            {
-                leftRightInputDirection = -1;
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                leftRightInputDirection = 1;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                jumpInput = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                reset = true;
-            }
-
-            DirectionUpdate();
+            wallCollider = new Collider[4];
+            wallColliderIntersections = new Vector3[4];
         }
 
-        bool reset;
+        public void Init()
+        {
+            InitCastArrays();
+
+            velocity = Vector3.zero;
+            velocityFloat = 0;
+
+            directionVelocity = Vector3.back;
+
+            RotateModel(directionVelocity);
+        }
+
+        public void Update()
+        {
+            DirectionUpdate();
+        }
 
         public void FixedUpdate()
         {
@@ -102,8 +99,6 @@ namespace UnityTask
 
         void DirectionUpdate()
         {
-            Vector3 last = directionVelocity;
-
             if (leftRightInputDirection != 0 || forwardBackwardsInputDirection != 0)
             {
                 Vector2 oldDirection = new Vector2(directionVelocity.x, directionVelocity.z);
@@ -129,8 +124,8 @@ namespace UnityTask
                 directionVelocity.z = Mathf.Lerp(directionVelocity.z, forwardBackwardsInputDirection, directionSpeed * Time.deltaTime);
             }
 
-            directionVelocity.x = Mathf.Clamp(directionVelocity.x, -1, 1);
-            directionVelocity.z = Mathf.Clamp(directionVelocity.z, -1, 1);
+            directionVelocity.x = Mathf.Clamp(directionVelocity.x, -MaxVelocity, MaxVelocity);
+            directionVelocity.z = Mathf.Clamp(directionVelocity.z, -MaxVelocity, MaxVelocity);
         }
 
         void Movement()
@@ -145,7 +140,7 @@ namespace UnityTask
                 velocityFloat += deceleration * Time.fixedDeltaTime;
             }
 
-            velocityFloat = Mathf.Clamp(velocityFloat, 0, maxHorizontalVelocity);
+            velocityFloat = Mathf.Clamp(velocityFloat, 0, maxSpeed);
 
             velocity.x = directionVelocity.x * velocityFloat;
             velocity.z = directionVelocity.z * velocityFloat;
@@ -189,9 +184,9 @@ namespace UnityTask
 
             RotateModel(directionVelocity);
 
-            if (reset)
+            if (resetInput)
             {
-                reset = false;
+                resetInput = false;
                 velocity = Vector3.zero;
                 _rigidbody.MovePosition(Vector3.up * 5);
             }

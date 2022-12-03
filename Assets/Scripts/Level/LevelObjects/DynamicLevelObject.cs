@@ -20,21 +20,22 @@ namespace UnityTask
             physicsEntity.Create();
         }
 
+        protected override void Init()
+        {
+            physicsEntity.Init();
+        }
+
+        public abstract void GetInput();
+
         public void UpdateLevelObject()
         {
+            GetInput();
             physicsEntity.Update();
         }
 
         public void FixedUpdateLevelObject()
         {
             physicsEntity.FixedUpdate();
-        }
-
-        public override void InitTransform(Vector3 localPosition)
-        {
-            base.InitTransform(localPosition);
-
-            transform.localScale = Vector3.one;
         }
     }
 }
