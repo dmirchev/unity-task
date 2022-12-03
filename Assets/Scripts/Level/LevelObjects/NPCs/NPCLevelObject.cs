@@ -17,6 +17,11 @@ namespace UnityTask
         [Header("Steering Amounts")]
         [SerializeField] private float seekAmount;
 
+        [Header("Damage")]
+        [SerializeField] private float playerHitForce;
+        [SerializeField] private float playerDamage;
+        
+
         protected override void Init()
         {
             base.Init();
@@ -58,6 +63,15 @@ namespace UnityTask
             Vector3 vectorNormalized = vector.normalized;
 
             return vectorNormalized * Mathf.Min(vectorMagnitude, max);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.layer == LevelManager.Instance.playerLayer)
+            {
+                GameManager.Instance.ApplyDamage(playerDamage);
+                other.GetComponent<PlayerLevelObject>().AddForce(physicsEntity.Position, playerHitForce);
+            }
         }
     }
 }

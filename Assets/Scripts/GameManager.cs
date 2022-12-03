@@ -8,6 +8,10 @@ namespace UnityTask
     {
         private GameState gameState;
 
+        [HideInInspector] public int coinsCollected;
+        private float health;
+        public float maxHealth;
+
         void Start()
         {
             gameState = GameState.None;
@@ -59,6 +63,10 @@ namespace UnityTask
 
         void InitManagers()
         {
+            coinsCollected = 0;
+
+            health = maxHealth;
+
             LevelManager.Instance.InitManager();
         }
 
@@ -74,6 +82,30 @@ namespace UnityTask
         {
             if (gameState == GameState.Play)
                 LevelManager.Instance.FixedUpdateManager();
+        }
+
+        public void AddCoin()
+        {
+            coinsCollected++;
+
+            GameUI.Instance.UpdateCoins(coinsCollected);
+        }
+
+        public void ApplyDamage(float damage)
+        {
+            health -= damage;
+
+            GameUI.Instance.UpdateHealth(health);
+
+            if (health <= 0)
+                Finish(false);
+        }
+
+        public void Finish(bool success)
+        {
+            gameState = GameState.None;
+
+            GameUI.Instance.FinishUI(success);
         }
     }
 

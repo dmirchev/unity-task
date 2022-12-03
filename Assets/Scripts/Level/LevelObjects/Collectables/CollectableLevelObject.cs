@@ -11,9 +11,20 @@ namespace UnityTask
             return LevelObjectType.Collectable;
         }
 
+        protected override void Init()
+        {
+            gameObject.SetActive(true);
+        }
+
         public virtual void ExecuteCollectable()
         {
             gameObject.SetActive(false);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.layer == LevelManager.Instance.playerLayer)
+                ExecuteCollectable();
         }
     }
 }

@@ -95,8 +95,6 @@ namespace UnityTask
                 () => OnClickLevelUIButton(-1),
                 LevelObjectType.None
             );
-
-            lastSelectedFlexibleGridElement = null;
         }
 
         public void SetContentState(bool state)
@@ -106,6 +104,8 @@ namespace UnityTask
 
         public void InitUI()
         {
+            lastSelectedFlexibleGridElement = null;
+            
             InitSliders();
 
             UpdateUI();

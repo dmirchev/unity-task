@@ -9,6 +9,8 @@ namespace UnityTask
         public override void ExecuteCollectable()
         {
             base.ExecuteCollectable();
+            
+            GameManager.Instance.Finish(true);
         }
     }
 }

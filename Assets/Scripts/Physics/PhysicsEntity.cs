@@ -149,6 +149,13 @@ namespace UnityTask
             leftRightInputDirection = 0;
             forwardBackwardsInputDirection = 0;
 
+            if (hit)
+            {
+                hit = false;
+
+                velocity += hitVector;
+            }
+
             if (jumpInput)
             {
                 jumpInput = false;
@@ -197,6 +204,15 @@ namespace UnityTask
         void Jump()
         {
             velocity.y += jumpForce;
+        }
+
+        bool hit;
+        Vector3 hitVector;
+
+        public void AddForce(Vector3 direction)
+        {
+            hit = true;
+            hitVector = direction * maxSpeed;
         }
 
         [SerializeField] private float groundRayYOffset;

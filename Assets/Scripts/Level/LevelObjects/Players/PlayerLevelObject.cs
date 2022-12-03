@@ -10,7 +10,7 @@ namespace UnityTask
         {
             return LevelObjectType.Player;
         }
-        
+
         public override void GetInput()
         {
             Vector2 input = Vector2.zero;
@@ -50,6 +50,13 @@ namespace UnityTask
 
             if (Input.GetKeyDown(KeyCode.Q))
                 physicsEntity.ResetInput = true;
+        }
+
+        public void AddForce(Vector3 position, float hitForce)
+        {
+            physicsEntity.AddForce(
+                (physicsEntity.Position - position).normalized * hitForce
+            );
         }
     }
 }

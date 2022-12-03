@@ -10,7 +10,7 @@ namespace UnityTask
         {
             base.ExecuteCollectable();
 
-            Debug.Log("HERE");
+            GameManager.Instance.AddCoin();
         }
     }
 }

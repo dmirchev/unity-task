@@ -67,12 +67,16 @@ MonoBehaviour:
     gravity: -150
     gravityClamp: -40
     rotaionSmoothSpeed: 12
+    forwardBackwardsInputDirection: 0
+    leftRightInputDirection: 0
     directionVelocity: {x: 0, y: 0, z: 0}
     directionVelocityMinSpeed: 2
     directionVelocityMaxSpeed: 8
     groundRayYOffset: 0
   target: {fileID: 0}
   seekAmount: 1
+  playerHitForce: 5
+  playerDamage: 5
 --- !u!54 &8030718566547121201
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -97,7 +101,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291929631363166060}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2

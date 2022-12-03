@@ -18,11 +18,18 @@ namespace UnityTask
         string GAMESTATEEDITBUTTONTEXT = "Play";
         string GAMESTATEPLAYBUTTONTEXT = "Edit";
 
+        [Header("Finish")]
+        [SerializeField] private GameObject finishUI;
+        [SerializeField] private TMP_Text finishUIText;
+        [SerializeField] private Button finishUIButton;
+
         public void CreateUIs()
         {
             levelUI.CreateUI();
+            statsUI.CreateUI();
 
             gameStateButton.onClick.AddListener(OnClickGameStateButton);
+            finishUIButton.onClick.AddListener(GameManager.Instance.GameStateEdit);
         }
 
         public void OnClickGameStateButton()
@@ -37,6 +44,8 @@ namespace UnityTask
             statsUI.SetContentState(false);
             levelUI.SetContentState(true);
 
+            finishUI.SetActive(false);
+
             levelUI.InitUI();
         }
 
@@ -47,7 +56,9 @@ namespace UnityTask
             statsUI.SetContentState(true);
             levelUI.SetContentState(false);
 
-            levelUI.InitUI();
+            finishUI.SetActive(false);
+
+            statsUI.InitUI();
         }
 
         public void CheckGameStateButtonState()
@@ -65,6 +76,23 @@ namespace UnityTask
         void LateUpdate()
         {
             aspectRatioManager.LateUpdateUI();
+        }
+
+        public void UpdateCoins(int coins)
+        {
+            statsUI.UpdateCoins(coins);
+        }
+
+        public void UpdateHealth(float health)
+        {
+            statsUI.UpdateHealth(health);
+        }
+
+        public void FinishUI(bool success)
+        {
+            finishUI.SetActive(true);
+
+            finishUIText.text = success ? "Success" : "Fail";
         }
     }
 }
